@@ -1,20 +1,294 @@
-﻿// ProgLab9.1.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
+﻿// Работа с векторами и радиусами цилиндров.
 
 #include <iostream>
+#include <corecrt_math_defines.h>
+
+class Radius {
+private:
+	double radius;
+public:
+	Radius()
+	{
+		this->radius = 0;
+	}
+	void initRadius(double rad)
+	{
+		radius = rad;
+	}
+	void readRadius()
+	{
+		std::cin >> radius;
+	}
+	void displayRadius()
+	{
+		std::cout << radius;
+	}
+	Radius addRadius(Radius rad1, Radius rad2)
+	{
+		radius = rad1.radius + rad2.radius;
+		return *this;
+	}
+	double returnRadius()
+	{
+		return radius;
+	}
+	Radius& operator ++()
+	{
+		this->radius++;
+		return *this;
+	}
+	Radius operator ++(int unused)
+	{
+		Radius c = *this;
+		++* this;
+		return c;
+	}
+
+};
+
+class Vector {
+private:
+	double X;
+	double Y;
+	double Z;
+	Radius cylinderRadius;
+public:
+	static int countOfVectors;
+
+	Vector()
+	{
+		X = 0;
+		Y = 0;
+		Z = 0;
+		cylinderRadius.initRadius(0);
+		Vector::countOfVectors++;
+	}
+	Vector(double X, double y, double z, Radius rad)
+	{
+		this->X = X;
+		this->Y = y;
+		this->Z = z;
+		this->cylinderRadius = rad;
+		Vector::countOfVectors++;
+	}
+
+	Vector(int n)
+	{
+		this->X = n;
+		this->Y = n;
+		this->Z = n;
+		this->cylinderRadius.initRadius(n);
+		Vector::countOfVectors++;
+	}
+
+	~Vector() { if (Vector::countOfVectors > 0) Vector::countOfVectors--; }
+
+	//void init(double x, double y, double z, Radius rad)
+	//{
+	//	this->X = x;
+	//	this->Y = y;
+	//	this->Z = z;
+	//	this->cylinderRadius = rad;
+	//	Vector::countOfVectors++;
+	//}
+
+	static int getCountOfVectors()
+	{
+		return Vector::countOfVectors;
+	}
+
+	void read()
+	{
+		std::cin >> this->X >> this->Y >> this->Z;
+		this->cylinderRadius.readRadius();
+	}
+
+	void display()
+	{
+		std::cout << this->X << "; " << this->Y << "; " << this->Z;
+		std::cout << ", радиус = ";
+		cylinderRadius.displayRadius();
+	}
+
+	Vector add(Vector vector)
+	{
+		Vector c;
+		c.X = this->X + vector.X;
+		c.Y = this->Y + vector.Y;
+		c.Z = this->Z + vector.Z;
+		c.cylinderRadius.addRadius(this->cylinderRadius, vector.cylinderRadius);
+		return c;
+	}
+
+	double length()
+	{
+		double length = sqrt(this->X * this->X + this->Y * this->Y + this->Z * this->Z);
+		return length;
+	}
+
+	void length(double* length)
+	{
+		*length = sqrt(this->X * this->X + this->Y * this->Y + this->Z * this->Z);
+	}
+
+	void length(double& length)
+	{
+		length = sqrt(this->X * this->X + this->Y * this->Y + this->Z * this->Z);
+	}
+
+
+	double scalar(Vector vector)
+	{
+		double scalar = this->X * vector.X + this->Y * vector.Y + this->Z * vector.Z;
+		return scalar;
+	}
+
+	friend double cylinderVolume(Vector vector);
+
+	Vector operator+(Vector vector)
+	{
+		Vector c;
+		c.X = this->X + vector.X;
+		c.Y = this->Y + vector.Y;
+		c.Z = this->Z + vector.Z;
+		c.cylinderRadius.addRadius(this->cylinderRadius, vector.cylinderRadius);
+		return c;
+	}
+
+	Vector& operator ++()
+	{
+		this->X++;
+		this->Y++;
+		this->Z++;
+		this->cylinderRadius++;
+		return *this;
+	}
+
+	Vector operator ++(int unused)
+	{
+		Vector c = *this;
+		++* this;
+		return c;
+	}
+};
+
+int Vector::countOfVectors = 0;
+
+double cylinderVolume(Vector vector)
+{
+	double volume = vector.cylinderRadius.returnRadius() * vector.cylinderRadius.returnRadius() * vector.length() * M_PI;
+	return volume;
+}
+
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	setlocale(LC_ALL, "Russian");
+	std::string str("Работа с векторами и радиусами цилиндров.\n");
+	int length_str = str.length();
+	std::cout << str << "Длина строки " << length_str << "\n";
+	Vector a, c;
+	Radius rad;
+	rad.initRadius(1.5);
+	Vector b(1, 0, -2, rad);
+	//b.init(1, 0, -2, rad);
+	printf("Количество созданных векторов: %d\n", Vector::getCountOfVectors());
+
+	printf("Введите координаты и радиус a: ");
+	a.read();
+
+	printf("Цилиндры:\n");
+	printf("a ");
+	a.display();
+	puts("");
+	printf("b ");
+	b.display();
+	puts("");
+
+	b++;
+	b.display();
+	puts("");
+
+	++b;
+	b.display();
+	puts("");
+
+	printf("Сложение цилиндров a и b:\n");
+	c = a + b;
+	printf("c ");
+	c.display();
+
+	double length1 = 0;
+	double length2 = 0;
+	a.length(&length1);
+	a.length(&length2);
+	printf("\nДлина вектора a равна %g\n", a.length());
+	printf("Длина вектора a равна %g (через указатель)\n", length1);
+	printf("Длина вектора a равна %g (через ссылку)\n", length2);
+
+	printf("Объем цилиндра a равен %g\n", cylinderVolume(a));
+	printf("Скалярное произведение векторов a и b равно %g\n", a.scalar(b));
+
+	Vector arr[3] = {1, 2, 3};
+
+	printf("Динамические переменные.\n");
+	Vector* din_a = new Vector();
+	Vector* din_b = new Vector(1, 0, -2.1, rad);
+	//(*din_b).init(1, 0, -2.1, rad);
+	Vector* din_c = new Vector();
+	printf("Количество созданных векторов: %d\n", Vector::getCountOfVectors());
+
+	Vector* d;
+	d = (Vector*)malloc(sizeof(Vector));
+	free(d);
+	d = (Vector*)calloc(2, sizeof(Vector));
+	d = (Vector*)realloc(d, 3 * sizeof(Vector));
+	free(d);
+
+	printf("Введите координаты и радиус a: ");
+	(*din_a).read();
+	printf("Цилиндры:\n");
+	printf("a ");
+	(*din_a).display();
+	puts("");
+	printf("b ");
+	(*din_b).display();
+	puts("");
+
+	printf("Сложение цилиндров a и b:\n");
+	(*din_c) = (*din_a).add(*din_b);
+	printf("c ");
+	(*din_c).display();
+
+	printf("\nДлина вектора a равна %g\n", (*din_a).length());
+	printf("Скалярное произведение векторов a и b равно %g\n", (*din_a).scalar(*din_b));
+	delete din_a;
+	delete din_b;
+	delete din_c;
+
+	printf("Динамический массив объектов.\n");
+	Vector* din_mas_obj;
+	din_mas_obj = new Vector[3]{1, 2, 0};
+	//din_mas_obj[1].init(1, -3, 0, rad);
+	printf("Количество созданных векторов: %d\n", Vector::getCountOfVectors());
+
+	printf("Введите координаты и радиус a: ");
+	din_mas_obj[0].read();
+	printf("Цилиндры:\n");
+	printf("a ");
+	din_mas_obj[0].display();
+	puts("");
+	printf("b ");
+	din_mas_obj[1].display();
+	puts("");
+
+	printf("Сложение цилиндров a и b:\n");
+	din_mas_obj[2] = din_mas_obj[0].add(din_mas_obj[1]);
+	printf("c ");
+	din_mas_obj[2].display();
+
+	printf("\nДлина вектора a равна %g\n", din_mas_obj[0].length());
+	printf("Скалярное произведение векторов a и b равно %g\n", din_mas_obj[0].scalar(din_mas_obj[1]));
+	delete[] din_mas_obj;
+	return 0;
 }
-
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
-
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
