@@ -81,16 +81,16 @@ public:
 		Vector::countOfVectors++;
 	}
 
-	~Vector() { if (Vector::countOfVectors > 0) Vector::countOfVectors--; }
+	Vector(Vector& vector)
+	{
+		this->X = vector.X * 2;
+		this->Y = vector.Y * 2;
+		this->Z = vector.Z * 2;
+		this->cylinderRadius = vector.cylinderRadius;
+		Vector::countOfVectors++;
+	}
 
-	//void init(double x, double y, double z, Radius rad)
-	//{
-	//	this->X = x;
-	//	this->Y = y;
-	//	this->Z = z;
-	//	this->cylinderRadius = rad;
-	//	Vector::countOfVectors++;
-	//}
+	~Vector() { if (Vector::countOfVectors > 0) Vector::countOfVectors--; }
 
 	static int getCountOfVectors()
 	{
@@ -230,6 +230,13 @@ int main()
 	printf("Скалярное произведение векторов a и b равно %g\n", a.scalar(b));
 
 	Vector arr[3] = {1, 2, 3};
+	printf("arr[0] ");
+	arr[0].display();
+	puts("");
+	Vector arrCopy = arr[0];
+	printf("arrCopy ");
+	arrCopy.display();
+	puts("");
 
 	printf("Динамические переменные.\n");
 	Vector* din_a = new Vector();
