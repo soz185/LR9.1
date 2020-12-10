@@ -1,0 +1,8 @@
+*.vs/
+Debug/
+ProgLab2/Debug/
+*.tlog
+*.log
+*.idb
+*.pdb
+*.obj
