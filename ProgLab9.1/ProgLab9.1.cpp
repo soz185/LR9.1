@@ -81,13 +81,12 @@ public:
 		Vector::countOfVectors++;
 	}
 
-	Vector(Vector& vector)
+	Vector(const Vector& vector)
 	{
 		this->X = vector.X * 2;
 		this->Y = vector.Y * 2;
 		this->Z = vector.Z * 2;
 		this->cylinderRadius = vector.cylinderRadius;
-		Vector::countOfVectors++;
 	}
 
 	~Vector() { if (Vector::countOfVectors > 0) Vector::countOfVectors--; }
@@ -155,6 +154,15 @@ public:
 		return c;
 	}
 
+	Vector& operator=(Vector &vector)
+	{
+		this->X = vector.X;
+		this->Y = vector.Y;
+		this->Z = vector.Z;
+		this->cylinderRadius = vector.cylinderRadius;
+		return *this;
+	}
+
 	Vector& operator ++()
 	{
 		this->X++;
@@ -213,10 +221,11 @@ int main()
 	b.display();
 	puts("");
 
-	printf("Сложение цилиндров a и b:\n");
-	c = a + b;
-	printf("c ");
-	c.display();
+	//c = a + b;
+	//printf("Сложение цилиндров a и b:\n");
+	////c = a.add(b);
+	//printf("c ");
+	//c.display();
 
 	double length1 = 0;
 	double length2 = 0;
@@ -262,10 +271,30 @@ int main()
 	(*din_b).display();
 	puts("");
 
-	printf("Сложение цилиндров a и b:\n");
-	(*din_c) = (*din_a).add(*din_b);
-	printf("c ");
-	(*din_c).display();
+	printf("Мелкое копирование.\n");
+	din_a = din_b;
+	printf("a = b =  ");
+	(*din_a).display();
+	puts("");
+	(*din_b)++;
+	printf("b + 1, a =  ");
+	(*din_a).display();
+	puts("");
+
+	printf("Глубокое копирование.\n");
+	*din_b = *din_c;
+	printf("b = c =  ");
+	(*din_b).display();
+	puts("");
+	(*din_c)++;
+	printf("c + 1, b =  ");
+	(*din_b).display();
+	puts("");
+
+	//printf("Сложение цилиндров a и b:\n");
+	//(*din_c) = (*din_a).add(*din_b);
+	//printf("c ");
+	//(*din_c).display();
 
 	printf("\nДлина вектора a равна %g\n", (*din_a).length());
 	printf("Скалярное произведение векторов a и b равно %g\n", (*din_a).scalar(*din_b));
@@ -289,10 +318,10 @@ int main()
 	din_mas_obj[1].display();
 	puts("");
 
-	printf("Сложение цилиндров a и b:\n");
-	din_mas_obj[2] = din_mas_obj[0].add(din_mas_obj[1]);
-	printf("c ");
-	din_mas_obj[2].display();
+	//printf("Сложение цилиндров a и b:\n");
+	//din_mas_obj[2] = din_mas_obj[0].add(din_mas_obj[1]);
+	//printf("c ");
+	//din_mas_obj[2].display();
 
 	printf("\nДлина вектора a равна %g\n", din_mas_obj[0].length());
 	printf("Скалярное произведение векторов a и b равно %g\n", din_mas_obj[0].scalar(din_mas_obj[1]));
