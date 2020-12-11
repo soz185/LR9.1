@@ -199,7 +199,6 @@ int main()
 	Radius rad;
 	rad.initRadius(1.5);
 	Vector b(1, 0, -2, rad);
-	//b.init(1, 0, -2, rad);
 	printf("Количество созданных векторов: %d\n", Vector::getCountOfVectors());
 
 	printf("Введите координаты и радиус a: ");
@@ -250,7 +249,6 @@ int main()
 	printf("Динамические переменные.\n");
 	Vector* din_a = new Vector();
 	Vector* din_b = new Vector(1, 0, -2.1, rad);
-	//(*din_b).init(1, 0, -2.1, rad);
 	Vector* din_c = new Vector();
 	printf("Количество созданных векторов: %d\n", Vector::getCountOfVectors());
 
@@ -299,13 +297,12 @@ int main()
 	printf("\nДлина вектора a равна %g\n", (*din_a).length());
 	printf("Скалярное произведение векторов a и b равно %g\n", (*din_a).scalar(*din_b));
 	delete din_a;
-	delete din_b;
+	//delete din_b;
 	delete din_c;
 
 	printf("Динамический массив объектов.\n");
 	Vector* din_mas_obj;
 	din_mas_obj = new Vector[3]{1, 2, 0};
-	//din_mas_obj[1].init(1, -3, 0, rad);
 	printf("Количество созданных векторов: %d\n", Vector::getCountOfVectors());
 
 	printf("Введите координаты и радиус a: ");
